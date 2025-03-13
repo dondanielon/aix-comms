@@ -1,0 +1,80 @@
+.container {
+  position: absolute;
+  width: 400px;
+  background-color: var(--ui-bg-color-3);
+  border: 1px solid var(--ui-bg-color-2);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  user-select: none;
+  transition: box-shadow 0.2s ease;
+  z-index: 10;
+}
+
+.container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--ui-main-color);
+  padding: 0 16px;
+  color: var(--ui-dark-text-color);
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+}
+
+.title {
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--ui-dark-text-color);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+  color: #ddd;
+}
+
+.selector {
+  display: flex;
+  justify-content: left;
+  background-color: var(--ui-bg-color-3);
+  padding: 0 8px;
+  height: 40px;
+  border-bottom: 1px solid var(--ui-bg-color-2);
+}
+
+.tabButton {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ui-light-text-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tabButton:hover {
+  color: var(--ui-main-color);
+}
+
+.active {
+  color: var(--ui-main-color);
+  border-bottom: 2px solid var(--ui-main-color);
+}
+
+.content {
+  padding: 16px;
+  height: calc(100% - 80px);
+  /* Resta el tamaño del header y selector */
+}

@@ -1,0 +1,27 @@
+.container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background-color: var(--ui-bg-color-3);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 8px;
+  z-index: 9;
+}
+
+.button {
+  background-color: var(--ui-main-color);
+  color: var(--ui-dark-text-color);
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--ui-main-color-light);
+}
