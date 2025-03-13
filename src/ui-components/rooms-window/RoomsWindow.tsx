@@ -4,6 +4,7 @@ import { useUIStore } from '@src/stores/useUIStore';
 import styles from './RoomsWindow.module.css';
 import RoomsList from '../rooms-list/RoomsList';
 import CreateRoom from '../create-room/CreateRoom';
+import { XIcon } from '../Icons';
 
 function RoomsWindow() {
   const { setShowRoomsWindow } = useUIStore();
@@ -11,7 +12,7 @@ function RoomsWindow() {
   const [dragging, setDragging] = useState(false);
   const [start, setStart] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({
-    x: window.innerWidth - 432,
+    x: window.innerWidth - 482,
     y: window.innerHeight - 512,
   });
 
@@ -72,7 +73,7 @@ function RoomsWindow() {
       >
         <p className={styles.title}>Public Rooms</p>
         <button className={styles.closeButton} onClick={() => setShowRoomsWindow(false)}>
-          x
+          <XIcon className={styles.closeIcon} />
         </button>
       </section>
 

@@ -38,13 +38,14 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  background-image: url('/public/test.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.render {
+  top: 0;
+  left: 0;
+  position: fixed;
+  /* fix to min width and height */
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }

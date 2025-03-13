@@ -6,13 +6,22 @@ import { GameMessage } from '@engine/types';
 import { useWebSocket } from '@hooks/useWebSocket';
 import RoomsWindow from '@src/ui-components/rooms-window/RoomsWindow';
 import { useUIStore } from './stores/useUIStore';
-import Game from './ui-components/game/Game';
+import GameLoader from './ui-components/game-loader/GameLoader';
+
+function UI() {
+  const showRoomsWindow = useUIStore((state) => state.showRoomsWindow);
+  return (
+    <div>
+      <Navbar />
+      {showRoomsWindow && <RoomsWindow />}
+    </div>
+  );
+}
 
 function App() {
   const { isConnected, sendMessage } = useWebSocket();
   const userId = useGameStore((state) => state.userId);
   const isInLobby = useGameStore((state) => state.isInLobby);
-  const showRoomsWindow = useUIStore((state) => state.showRoomsWindow);
 
   useEffect(() => {
     if (!userId && isConnected) {
@@ -23,9 +32,8 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      {isInLobby ? <Lobby /> : <Game />}
-      {showRoomsWindow && <RoomsWindow />}
+      <UI />
+      {isInLobby ? <Lobby /> : <GameLoader />}
     </>
   );
 }

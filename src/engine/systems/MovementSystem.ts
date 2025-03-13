@@ -189,7 +189,7 @@ export class MovementSystem {
         const toggle = !this.player.movement.toggleRun;
         if (toggle) {
           this.player.animation.selectedMoveAnimation = this.player.animation.run;
-          this.player.movement.speed = 3;
+          this.player.movement.speed = 2.2;
         } else {
           this.player.animation.selectedMoveAnimation = this.player.animation.walk;
           this.player.movement.speed = 1;

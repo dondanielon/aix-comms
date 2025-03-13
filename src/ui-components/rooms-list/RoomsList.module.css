@@ -26,6 +26,7 @@
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
   justify-content: space-between;
+  gap: 5px;
 }
 
 .room:hover {
@@ -89,18 +90,35 @@
 
 .roomButton {
   align-items: center;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 5px;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
+  display: flex;
+  color: var(--ui-light-text-color);
+  transition: filter 0.2s ease;
+}
+
+.roomButton:hover {
+  filter: brightness(1.2);
 }
 
 .roomAdminButton {
-  background-color: #ffdd03;
+  background-color: #b44e00;
 }
 
 .roomJoinButton {
-  background-color: #059d00;
+  background-color: #0048a7;
+}
+
+.roomJoinIcon {
+  height: 16px;
+  width: 16px;
+}
+
+.roomAdminIcon {
+  height: 16px;
+  width: 16px;
 }
 
 /* Scroll bar */

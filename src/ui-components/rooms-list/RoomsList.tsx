@@ -2,11 +2,14 @@ import { GameMessage } from '@engine/types';
 import { useWebSocket } from '@hooks/useWebSocket';
 import { useEffect } from 'react';
 import { useGameStore } from '@src/stores/useGameStore';
+import { AdminIcon, JoinIcon } from '../Icons';
 
 import styles from './RoomsList.module.css';
 
+const isAdmin = true;
+
 function RoomsList() {
-  const { gamesList } = useGameStore();
+  const { gamesList, setLobbyId } = useGameStore();
   const { isConnected, sendMessage } = useWebSocket();
 
   useEffect(() => {
@@ -14,6 +17,11 @@ function RoomsList() {
       sendMessage(GameMessage.GamesList, '');
     }
   }, [isConnected]);
+
+  const handleJoin = (id: string) => {
+    sendMessage(GameMessage.JoinGame, id);
+    setLobbyId(id);
+  };
 
   return (
     <div className={styles.container}>
@@ -29,8 +37,17 @@ function RoomsList() {
                 </div>
               </div>
               <div className={styles.right}>
-                <button className={`${styles.roomButton} ${styles.roomAdminButton}`}>Admin</button>
-                <button className={`${styles.roomButton} ${styles.roomJoinButton}`}>Join</button>
+                {isAdmin && (
+                  <button className={`${styles.roomButton} ${styles.roomAdminButton}`}>
+                    <AdminIcon className={styles.roomAdminIcon} />
+                  </button>
+                )}
+                <button
+                  className={`${styles.roomButton} ${styles.roomJoinButton}`}
+                  onClick={() => handleJoin(item.id)}
+                >
+                  <JoinIcon className={styles.roomJoinIcon} />
+                </button>
               </div>
             </li>
           ))}

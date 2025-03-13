@@ -9,10 +9,17 @@ const CAMERA_FAR_VIEW = 1_000;
 const CAMERA_FOV = 25;
 const CAMERA_NEAR_VIEW = 0.1;
 
-function Game() {
+interface IGameProps {
+  loading: (x: boolean) => void;
+}
+
+function Game({ loading }: IGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const initialize = async (canvas: HTMLCanvasElement) => {
+    loading(true);
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const scene = new Scene();
     const renderer = new WebGLRenderer({ antialias: true, canvas });
     const camera = new PerspectiveCamera(
@@ -52,6 +59,7 @@ function Game() {
     };
 
     animationLoop();
+    loading(false);
   };
 
   useEffect(() => {

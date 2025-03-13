@@ -3,11 +3,13 @@ import { WebSocketMessageLog, WebSocketProviderType } from '@src/interfaces';
 import { useGameStore } from '@stores/useGameStore';
 import { useEffect, useRef, useState } from 'react';
 import { WebSocketContext } from './context';
+import { useUIStore } from '@src/stores/useUIStore';
 
 export const WebSocketProvider: WebSocketProviderType = (props) => {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<WebSocketMessageLog[]>([]);
-  const { setUserId, setGameState, setGamesList } = useGameStore();
+  const { setUserId, setGameState, setGamesList, setIsInLobby } = useGameStore();
+  const { setShowRoomsWindow } = useUIStore();
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -42,9 +44,13 @@ export const WebSocketProvider: WebSocketProviderType = (props) => {
           setGamesList(list);
           break;
         }
-        case GameMessage.JoinGame:
-          setGameState(JSON.parse(payload));
+        case GameMessage.JoinGame: {
+          const message = JSON.parse(payload);
+          setGameState(message);
+          setIsInLobby(false);
+          setShowRoomsWindow(false);
           break;
+        }
       }
     };
 
