@@ -1,19 +1,9 @@
-import { type GameMessage } from '@engine/types';
-
 export interface WebSocketMessageLog {
   action: 'sent' | 'received';
   type: number;
   payload: string;
   timestamp: number;
 }
-
-export interface WebSocketContextType {
-  sendMessage: (type: GameMessage, payload: string) => void;
-  isConnected: boolean;
-  messages: WebSocketMessageLog[];
-}
-
-export type WebSocketProviderType = React.FC<{ url: string; children: React.ReactNode }>;
 
 export interface WebSocketPlayer {
   username: string;
@@ -31,10 +21,12 @@ export interface WebSocketPlayer {
 }
 
 export interface WebSocketGameState {
+  id: string;
   host: string;
   name: string;
   players: Record<string, WebSocketPlayer>;
   terrainId: string;
+  terrainRotation: number;
   terrainPoints: Array<{ x: number; y: number }>;
 }
 

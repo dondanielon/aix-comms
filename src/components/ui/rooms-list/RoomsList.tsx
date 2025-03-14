@@ -1,8 +1,8 @@
-import { GameMessage } from '@engine/types';
-import { useWebSocket } from '@hooks/useWebSocket';
+import { useWebSocket } from '@src/hooks/websocket.hook';
 import { useEffect } from 'react';
-import { useGameStore } from '@src/stores/useGameStore';
+import { useGameStore } from '@src/stores/game.store';
 import { AdminIcon, JoinIcon } from '../Icons';
+import { GameEvent } from '@enums/game.enums';
 
 import styles from './RoomsList.module.css';
 
@@ -10,16 +10,14 @@ const isAdmin = true;
 
 function RoomsList() {
   const { gamesList, setLobbyId } = useGameStore();
-  const { isConnected, sendMessage } = useWebSocket();
+  const { sendMessage } = useWebSocket();
 
   useEffect(() => {
-    if (isConnected) {
-      sendMessage(GameMessage.GamesList, '');
-    }
-  }, [isConnected]);
+    sendMessage(GameEvent.GamesList, '');
+  }, []);
 
   const handleJoin = (id: string) => {
-    sendMessage(GameMessage.JoinGame, id);
+    sendMessage(GameEvent.JoinGame, id);
     setLobbyId(id);
   };
 

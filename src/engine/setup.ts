@@ -10,14 +10,17 @@ import {
 import { TerrainEntity } from './entities/TerrainEntity';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 import { PlayerEntity } from './entities/PlayerEntity';
+import { WebSocketPlayer } from '@src/interfaces';
+import { getModel } from '@src/services/assets.service';
 
-export function setupTerrain(): TerrainEntity {
-  return new TerrainEntity('terrain-id', {
-    rotation: -Math.PI / 2,
-    points: ['0:0', '10:0', '10:10', '20:10', '20:20', '0:20', '0:0'].map((point) => {
-      const [x, y] = point.split(':');
-      return new Vector2(Number(x), Number(y));
-    }),
+export function setupTerrain(
+  id: string,
+  rotation: number,
+  points: Array<{ x: number; y: number }>
+): TerrainEntity {
+  return new TerrainEntity(id, {
+    rotation,
+    points: points.map((point) => new Vector2(point.x, point.y)),
   });
 }
 
@@ -40,39 +43,53 @@ export function setupLighting() {
   return { directionalLight, ambientLight };
 }
 
-export async function setupPlayer() {
+const findAnimations = (animations: AnimationClip[]) => ({
+  idle: animations.find((animation) => animation.name === 'idle')!,
+  run: animations.find((animation) => animation.name === 'fast-run')!,
+  tpose: animations.find((animation) => animation.name === 'tpose')!,
+  walk: animations.find((animation) => animation.name === 'walk')!,
+  jump: animations.find((animation) => animation.name === 'jump')!,
+});
+
+export async function setupPlayers(
+  players: Record<string, WebSocketPlayer>
+): Promise<PlayerEntity[]> {
   const loader = new GLTFLoader();
-  const model = await loader.loadAsync('/src/assets/girl.glb');
-  const mesh = model.scene;
-  const mixer = new AnimationMixer(mesh);
 
-  const findAnimations = (animations: AnimationClip[]) => ({
-    idle: animations.find((animation) => animation.name === 'idle')!,
-    run: animations.find((animation) => animation.name === 'fast-run')!,
-    tpose: animations.find((animation) => animation.name === 'tpose')!,
-    walk: animations.find((animation) => animation.name === 'walk')!,
-    jump: animations.find((animation) => animation.name === 'jump')!,
-  });
+  return Promise.all(
+    Object.entries(players).map(async ([id, data]) => {
+      let modelPath = '/src/assets/girl.glb';
 
-  const animations = findAnimations(model.animations);
-  const initialMoveAnimation = mixer.clipAction(animations.walk);
+      const modelBlob = await getModel(data.skin);
+      if (modelBlob) {
+        modelPath = URL.createObjectURL(modelBlob);
+      }
 
-  mesh.scale.set(1, 1, 1);
-  mesh.castShadow = true;
-  mesh.position.set(0, 0, 0);
+      const model = await loader.loadAsync(modelPath);
+      const mesh = model.scene;
+      const mixer = new AnimationMixer(mesh);
 
-  return new PlayerEntity('player-id', 'danvr', {
-    component: {
-      animation: {
-        idle: mixer.clipAction(animations.idle),
-        run: mixer.clipAction(animations.run),
-        tpose: mixer.clipAction(animations.tpose),
-        walk: mixer.clipAction(animations.walk),
-        selectedMoveAnimation: initialMoveAnimation,
-        mixer,
-      },
-      movement: { isMoving: false, speed: 1, targetPosition: new Vector3(), toggleRun: false },
-      model: { asset: model, boundingBox: new Box3().setFromObject(mesh), mesh },
-    },
-  });
+      const animations = findAnimations(model.animations);
+      const initialMoveAnimation = mixer.clipAction(animations.walk);
+
+      mesh.scale.set(1, 1, 1);
+      mesh.castShadow = true;
+      mesh.position.set(0, 0, 0);
+
+      return new PlayerEntity(id, data.username, {
+        component: {
+          animation: {
+            idle: mixer.clipAction(animations.idle),
+            run: mixer.clipAction(animations.run),
+            tpose: mixer.clipAction(animations.tpose),
+            walk: mixer.clipAction(animations.walk),
+            selectedMoveAnimation: initialMoveAnimation,
+            mixer,
+          },
+          movement: { isMoving: false, speed: 1, targetPosition: new Vector3(), toggleRun: false },
+          model: { asset: model, boundingBox: new Box3().setFromObject(mesh), mesh },
+        },
+      });
+    })
+  );
 }

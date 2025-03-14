@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useUIStore } from '@src/stores/useUIStore';
+import { useUIStore } from '@src/stores/ui.store';
 
 import styles from './RoomsWindow.module.css';
 import RoomsList from '../rooms-list/RoomsList';

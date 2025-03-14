@@ -1,19 +1,30 @@
-import { GameMessage } from '@engine/types';
-import { WebSocketMessageLog, WebSocketProviderType } from '@src/interfaces';
-import { useGameStore } from '@stores/useGameStore';
 import { useEffect, useRef, useState } from 'react';
-import { WebSocketContext } from './context';
-import { useUIStore } from '@src/stores/useUIStore';
+import { WebSocketContext } from './contexts/websocket.context';
+import { useShallow } from 'zustand/shallow';
+import { useGameStore } from '@stores/game.store';
+import { useUIStore } from '@src/stores/ui.store';
+import { WebSocketGameState } from '@src/interfaces';
+import { GameEvent } from '@enums/game.enums';
 
-export const WebSocketProvider: WebSocketProviderType = (props) => {
+const wsUrl = 'ws://localhost:80';
+
+export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<WebSocketMessageLog[]>([]);
-  const { setUserId, setGameState, setGamesList, setIsInLobby } = useGameStore();
-  const { setShowRoomsWindow } = useUIStore();
+
+  const setShowRoomsWindow = useUIStore((state) => state.setShowRoomsWindow);
+  const { setUser, setState, setGamesList, setLobbyId } = useGameStore(
+    useShallow((store) => ({
+      setUser: store.setUser,
+      setState: store.setState,
+      setGamesList: store.setGamesList,
+      setLobbyId: store.setLobbyId,
+    }))
+  );
+
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:80');
+    const ws = new WebSocket(wsUrl);
     ws.binaryType = 'arraybuffer';
     wsRef.current = ws;
 
@@ -26,28 +37,23 @@ export const WebSocketProvider: WebSocketProviderType = (props) => {
       const buffer = event.data as ArrayBuffer;
       const view = new Uint8Array(buffer);
       const messageType = view[0];
-      const payload = new TextDecoder().decode(view.slice(1));
+      const payload = JSON.parse(new TextDecoder().decode(view.slice(1)));
 
       console.log({ messageType, payload });
 
-      setMessages((prev) => [
-        ...prev,
-        { action: 'received', type: messageType, payload, timestamp: Date.now() },
-      ]);
-
       switch (messageType) {
-        case GameMessage.Authentication:
-          setUserId(payload);
+        case GameEvent.Authentication:
+          setUser(payload);
           break;
-        case GameMessage.GamesList: {
-          const list = JSON.parse(payload);
-          setGamesList(list);
+        case GameEvent.GamesList: {
+          setGamesList(payload);
           break;
         }
-        case GameMessage.JoinGame: {
-          const message = JSON.parse(payload);
-          setGameState(message);
-          setIsInLobby(false);
+        case GameEvent.JoinGame: {
+          const gameState = payload as WebSocketGameState;
+
+          setLobbyId(gameState.id);
+          setState(gameState);
           setShowRoomsWindow(false);
           break;
         }
@@ -62,9 +68,9 @@ export const WebSocketProvider: WebSocketProviderType = (props) => {
       console.log('Connection closed.');
       setIsConnected(false);
     };
-  }, [setGameState, setGamesList, setUserId]);
+  }, []);
 
-  const sendMessage = (type: GameMessage, payload: string): void => {
+  const sendMessage = (type: GameEvent, payload: string): void => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
       console.error('Connection with server dropped');
       return;
@@ -79,8 +85,8 @@ export const WebSocketProvider: WebSocketProviderType = (props) => {
   };
 
   return (
-    <WebSocketContext.Provider value={{ messages, sendMessage, isConnected }}>
-      {props.children}
+    <WebSocketContext.Provider value={{ sendMessage }}>
+      {isConnected && props.children}
     </WebSocketContext.Provider>
   );
 };

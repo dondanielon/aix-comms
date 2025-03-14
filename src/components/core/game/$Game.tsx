@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
-import { setupLighting, setupPlayer, setupTerrain } from '@engine/setup';
+import { setupLighting, setupPlayers, setupTerrain } from '@engine/setup';
 import { CameraSystem } from '@engine/systems/CameraSystem';
 import { MovementSystem } from '@engine/systems/MovementSystem';
+import { WebSocketGameState } from '@src/interfaces';
+import { gameStore } from '@src/stores/game.store';
 
 const CAMERA_ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const CAMERA_FAR_VIEW = 1_000;
@@ -15,9 +17,11 @@ interface IGameProps {
 
 function Game({ loading }: IGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const user = gameStore((state) => state.user);
+  const gameState = gameStore((state) => state.gameState);
 
-  const initialize = async (canvas: HTMLCanvasElement) => {
-    loading(true);
+  const initialize = async (canvas: HTMLCanvasElement, state: WebSocketGameState) => {
+    if (!user) return;
     // await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const scene = new Scene();
@@ -32,21 +36,26 @@ function Game({ loading }: IGameProps) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
-    const terrain = setupTerrain();
+    const terrain = setupTerrain(state.terrainId, state.terrainRotation, state.terrainPoints);
     const { directionalLight, ambientLight } = setupLighting();
-    const player = await setupPlayer();
+    const players = await setupPlayers(state.players);
+    const mainPlayer = players.find((p) => p.id === user.id);
+    if (!mainPlayer) return;
 
     scene.add(camera);
     scene.add(terrain.mesh);
     scene.add(directionalLight);
     scene.add(ambientLight);
-    scene.add(player.model.mesh);
 
-    player.animation.idle.play();
+    for (const player of players) {
+      scene.add(player.model.mesh);
+    }
+
+    mainPlayer.animation.idle.play();
 
     const clock = new Clock();
-    const cameraSystem = new CameraSystem(camera, player);
-    const movementSystem = new MovementSystem(player, canvas, scene, camera, terrain);
+    const cameraSystem = new CameraSystem(camera, mainPlayer);
+    const movementSystem = new MovementSystem(mainPlayer, canvas, scene, camera, terrain);
 
     const animationLoop = () => {
       requestAnimationFrame(animationLoop);
@@ -63,10 +72,10 @@ function Game({ loading }: IGameProps) {
   };
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !gameState) return;
 
     const canvas = canvasRef.current;
-    initialize(canvas);
+    initialize(canvas, gameState);
 
     return () => {
       const context = canvas.getContext('webgl2') || canvas.getContext('webgl');

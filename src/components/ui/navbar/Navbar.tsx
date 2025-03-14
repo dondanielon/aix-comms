@@ -1,9 +1,10 @@
 import styles from './Navbar.module.css';
-import { useUIStore } from '@src/stores/useUIStore';
-import { http } from '@src/services';
+import { useUIStore } from '@src/stores/ui.store';
+import { http } from '@src/services/config';
 
 function Navbar() {
-  const { showRoomsWindow, setShowRoomsWindow } = useUIStore();
+  const showRoomsWindow = useUIStore((store) => store.showRoomsWindow);
+  const setShowRoomsWindow = useUIStore((store) => store.setShowRoomsWindow);
 
   const getToken = async () => {
     const response = await http.post(

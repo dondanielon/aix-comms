@@ -1,15 +1,12 @@
-import { useEffect } from 'react';
-import Navbar from '@ui-components/navbar/Navbar';
-import Lobby from '@ui-components/lobby/Lobby';
-import { useGameStore } from '@stores/useGameStore';
-import { GameMessage } from '@engine/types';
-import { useWebSocket } from '@hooks/useWebSocket';
-import RoomsWindow from '@src/ui-components/rooms-window/RoomsWindow';
-import { useUIStore } from './stores/useUIStore';
-import GameLoader from './ui-components/game-loader/GameLoader';
+import Navbar from '@components/ui/navbar/Navbar';
+import { useGameStore } from '@stores/game.store';
+import { useUIStore } from '@stores/ui.store';
+import GameLoader from '@components/core/game-loader/GameLoader';
+import RoomsWindow from '@components/ui/rooms-window/RoomsWindow';
+import Lobby from '@components/core/lobby/Lobby';
 
 function UI() {
-  const showRoomsWindow = useUIStore((state) => state.showRoomsWindow);
+  const showRoomsWindow = useUIStore((store) => store.showRoomsWindow);
   return (
     <div>
       <Navbar />
@@ -19,21 +16,11 @@ function UI() {
 }
 
 function App() {
-  const { isConnected, sendMessage } = useWebSocket();
-  const userId = useGameStore((state) => state.userId);
-  const isInLobby = useGameStore((state) => state.isInLobby);
-
-  useEffect(() => {
-    if (!userId && isConnected) {
-      const idToken = localStorage.getItem('x-id-token');
-      sendMessage(GameMessage.Authentication, idToken ?? '');
-    }
-  }, [isConnected]);
-
+  const lobbyId = useGameStore((store) => store.lobbyId);
   return (
     <>
       <UI />
-      {isInLobby ? <Lobby /> : <GameLoader />}
+      {lobbyId ? <GameLoader /> : <Lobby />}
     </>
   );
 }

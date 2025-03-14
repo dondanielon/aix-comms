@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import styles from './CreateRoom.module.css';
 import { Terrain } from '@src/interfaces';
-import { http } from '@src/services';
-import { useWebSocket } from '@src/hooks/useWebSocket';
-import { GameMessage } from '@src/engine/types';
+import { http } from '@src/services/config';
+import { useWebSocket } from '@src/hooks/websocket.hook';
+import { GameEvent } from '@enums/game.enums';
 
 function CreateRoom() {
-  const { isConnected, sendMessage } = useWebSocket();
+  const { sendMessage } = useWebSocket();
   const [terrains, setTerrains] = useState<Terrain[]>([]);
   const [name, setName] = useState('');
   const [selectedTerrain, setSelectedTerrain] = useState<string | null>(null);
@@ -14,7 +14,7 @@ function CreateRoom() {
   useEffect(() => {
     const init = async () => {
       try {
-        const { data } = await http.get('/terrain');
+        const { data } = await http.get('/v1/terrain');
         setTerrains(data.terrains);
       } catch (error) {
         console.error(error);
@@ -27,11 +27,11 @@ function CreateRoom() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !selectedTerrain || !isConnected) {
+    if (!name || !selectedTerrain) {
       return;
     }
 
-    sendMessage(GameMessage.CreateGame, JSON.stringify({ id: selectedTerrain, name }));
+    sendMessage(GameEvent.CreateGame, JSON.stringify({ id: selectedTerrain, name }));
     setName('');
     setSelectedTerrain(null);
   };

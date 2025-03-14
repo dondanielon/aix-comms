@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-interface UIState {
+interface State {
   showRoomsWindow: boolean;
   setShowRoomsWindow: (value: boolean) => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
+export const useUIStore = create<State>((set) => ({
   showRoomsWindow: false,
   setShowRoomsWindow: (value) => set({ showRoomsWindow: value }),
 }));
