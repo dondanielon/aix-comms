@@ -1,13 +1,13 @@
-import { getAssetsCache } from '@src/utils/cache.utils';
+import { getAssetCache } from '@src/utils/cache.utils';
 import { http } from './config';
 import { HttpStatusCode } from 'axios';
 
 const baseUrl = '/assets';
 
-export const AssetsService = {
+export const AssetService = {
   getModel: async (id: string): Promise<Blob | null> => {
     const url = `${http.getUri()}${baseUrl}/models/${id}`;
-    const cache = await getAssetsCache();
+    const cache = await getAssetCache();
 
     const cachedResponse = await cache.match(url);
     if (cachedResponse) {

@@ -8,7 +8,7 @@ import { GameEvent } from '@enums/game.enums';
 
 const wsUrl = 'ws://localhost:80';
 
-export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
+const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [isConnected, setIsConnected] = useState(false);
 
   const setShowRoomsWindow = useUIStore((state) => state.setShowRoomsWindow);
@@ -90,3 +90,5 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props
     </WebSocketContext.Provider>
   );
 };
+
+export default WebSocketProvider;

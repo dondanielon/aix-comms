@@ -2,15 +2,21 @@ import Navbar from '@components/ui/navbar/Navbar';
 import { useGameStore } from '@stores/game.store';
 import { useUIStore } from '@stores/ui.store';
 import GameLoader from '@components/core/game-loader/GameLoader';
-import RoomsWindow from '@components/ui/rooms-window/RoomsWindow';
 import Lobby from '@components/core/lobby/Lobby';
+import Rooms from '@components/ui/Rooms';
+import RoomsWindow from './components/ui/rooms-window/RoomsWindow';
 
 function UI() {
   const showRoomsWindow = useUIStore((store) => store.showRoomsWindow);
   return (
     <div>
       <Navbar />
-      {showRoomsWindow && <RoomsWindow />}
+      {showRoomsWindow && (
+        <>
+          <Rooms />
+          <RoomsWindow />
+        </>
+      )}
     </div>
   );
 }

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useUIStore } from '@src/stores/ui.store';
-
 import styles from './RoomsWindow.module.css';
 import RoomsList from '../rooms-list/RoomsList';
-import CreateRoom from '../create-room/CreateRoom';
 import { XIcon } from '../Icons';
 
 function RoomsWindow() {
@@ -80,19 +78,15 @@ function RoomsWindow() {
       <section className={styles.selector}>
         <button
           className={`${styles.tabButton} ${selected === 'L' ? styles.active : ''}`}
-          onClick={() => selected === 'CR' && setSelected('L')}
+          onClick={() => setSelected('L')}
         >
           List
         </button>
-        <button
-          className={`${styles.tabButton} ${selected === 'CR' ? styles.active : ''}`}
-          onClick={() => selected === 'L' && setSelected('CR')}
-        >
-          Create Room
-        </button>
       </section>
 
-      <div className={styles.content}>{selected === 'L' ? <RoomsList /> : <CreateRoom />}</div>
+      <div className={styles.content}>
+        <RoomsList />{' '}
+      </div>
     </div>
   );
 }

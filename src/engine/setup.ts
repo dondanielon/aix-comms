@@ -11,7 +11,7 @@ import { TerrainEntity } from './entities/TerrainEntity';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 import { PlayerEntity } from './entities/PlayerEntity';
 import { WebSocketPlayer } from '@src/interfaces';
-import { getModel } from '@src/services/assets.service';
+import { AssetService } from '@src/services/asset.service';
 
 export function setupTerrain(
   id: string,
@@ -60,7 +60,7 @@ export async function setupPlayers(
     Object.entries(players).map(async ([id, data]) => {
       let modelPath = '/src/assets/girl.glb';
 
-      const modelBlob = await getModel(data.skin);
+      const modelBlob = await AssetService.getModel(data.skin);
       if (modelBlob) {
         modelPath = URL.createObjectURL(modelBlob);
       }

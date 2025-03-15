@@ -8,7 +8,11 @@ const Game: React.FC<{ loading: (v: boolean) => void }> = (props) => {
   }, []);
 
   return (
-    <Canvas id='renderer' gl={{ antialias: true }}>
+    <Canvas
+      id='renderer'
+      gl={{ antialias: true }}
+      className='fixed top-0 left-0 w-full h-full z-[1]'
+    >
       <perspectiveCamera
         position={[10, 10, 10]}
         lookAt={[0, 0, 0]}
