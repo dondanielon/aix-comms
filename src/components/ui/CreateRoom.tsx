@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { Input } from '@components/shadcn/input';
-import { ScrollArea } from '@components/shadcn/scroll';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useWebSocket } from '@src/hooks/websocket.hook';
-import { GameEvent } from '@src/enums/game.enums';
+import { useWebSocket } from '@hooks/websocket.hook';
+import { GameEvent } from '@enums/game.enums';
 import { Terrain } from '@src/interfaces';
 import { TerrainService } from '@src/services/terrain.service';
-import { Card } from '@components/shadcn/card';
 import { Button } from '@components/shadcn/button';
+import { useUIStore } from '@stores/ui.store';
+import { ScrollArea } from '@components/shadcn/scroll';
+import { Card } from '@components/shadcn/card';
 import {
   Form,
   FormControl,
@@ -18,7 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@components/shadcn/form';
-import { useUIStore } from '@src/stores/ui.store';
 
 const formSchema = z.object({
   name: z.string().min(5, { message: 'Name must be at least 5 characters.' }),
@@ -33,12 +33,19 @@ const CreateRoom: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      const lsTerrains = localStorage.getItem('terrains-list');
+      if (lsTerrains) {
+        setTerrains(JSON.parse(lsTerrains));
+        return;
+      }
+
       const res = await TerrainService.getTerrains();
       if (!res) {
         console.error('Error fetching terrains');
         return;
       }
 
+      localStorage.setItem('terrains-list', JSON.stringify(res.terrains));
       setTerrains(res.terrains);
     })();
   }, []);
@@ -80,30 +87,29 @@ const CreateRoom: React.FC = () => {
             name='terrainId'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Terrain Layout</FormLabel>
+                <FormLabel>Terrain</FormLabel>
                 <FormControl>
                   <ScrollArea className='custom-scrollbar'>
                     <div className='flex flex-col gap-2 h-[148px] overflow-y-auto p-0'>
-                      {terrains.length &&
-                        terrains.map((terrain) => (
-                          <Card
-                            key={terrain.id}
-                            className={`terrain-item p-3 rounded-lg cursor-pointer bg-muted transition-colors duration-100 text-[12px] border border-muted hover:bg-main-ui hover:border-main-ui ${
-                              selected === terrain.id ? 'bg-main-ui border-main-ui' : ''
-                            }`}
-                            onClick={() => {
-                              if (selected === terrain.id) {
-                                setSelected(null);
-                                field.onChange('');
-                              } else {
-                                field.onChange(terrain.id);
-                                setSelected(terrain.id);
-                              }
-                            }}
-                          >
-                            {terrain.id} - {terrain.name}
-                          </Card>
-                        ))}
+                      {terrains.map((terrain) => (
+                        <Card
+                          key={terrain.id}
+                          onClick={() => {
+                            if (selected === terrain.id) {
+                              setSelected(null);
+                              field.onChange('');
+                            } else {
+                              field.onChange(terrain.id);
+                              setSelected(terrain.id);
+                            }
+                          }}
+                          className={`terrain-item p-3 rounded-lg cursor-pointer bg-muted transition-colors duration-100 text-[12px] border border-muted hover:bg-main-ui hover:border-main-ui ${
+                            selected === terrain.id ? 'bg-main-ui border-main-ui' : ''
+                          }`}
+                        >
+                          {terrain.id} - {terrain.name}
+                        </Card>
+                      ))}
                     </div>
                   </ScrollArea>
                 </FormControl>
