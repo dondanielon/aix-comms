@@ -3,8 +3,7 @@ import { useGameStore } from '@stores/game.store';
 import { useUIStore } from '@stores/ui.store';
 import GameLoader from '@components/core/game-loader/GameLoader';
 import Lobby from '@components/core/lobby/Lobby';
-import Rooms from '@components/ui/Rooms';
-import RoomsWindow from './components/ui/rooms-window/RoomsWindow';
+import PublicRooms from '@src/components/ui/PublicRooms';
 
 function UI() {
   const showRoomsWindow = useUIStore((store) => store.showRoomsWindow);
@@ -13,8 +12,8 @@ function UI() {
       <Navbar />
       {showRoomsWindow && (
         <>
-          <Rooms />
-          <RoomsWindow />
+          <PublicRooms />
+          {/* <RoomsWindow /> */}
         </>
       )}
     </div>
@@ -22,11 +21,12 @@ function UI() {
 }
 
 function App() {
-  const lobbyId = useGameStore((store) => store.lobbyId);
+  const gameState = useGameStore((store) => store.gameState);
+
   return (
     <>
       <UI />
-      {lobbyId ? <GameLoader /> : <Lobby />}
+      {gameState ? <GameLoader /> : <Lobby />}
     </>
   );
 }

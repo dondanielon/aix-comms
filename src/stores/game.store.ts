@@ -1,35 +1,24 @@
 import { create } from 'zustand';
-import { WebSocketGameState, WebSocketRoom } from '@src/interfaces';
+import { GameState, RoomInfo, User } from '@src/types/game.types';
 
-interface User {
-  id: string;
-  email: string;
-  metadata: {
-    modelId: string;
-  };
-}
-
-interface GameState {
+interface GameStore {
   user: User | null;
   setUser: (user: User) => void;
 
-  lobbyId: string | null;
-  setLobbyId: (id: string) => void;
+  gameState: GameState | null;
+  setGameState: (gameState: GameState) => void;
 
-  state: WebSocketGameState | null;
-  setState: (gameState: WebSocketGameState) => void;
-
-  gamesList: WebSocketRoom[];
-  setGamesList: (list: WebSocketRoom[]) => void;
+  gamesList: RoomInfo[];
+  setGamesList: (list: RoomInfo[]) => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
+export const useGameStore = create<GameStore>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
-  lobbyId: null,
-  setLobbyId: (lobbyId) => set({ lobbyId }),
-  state: null,
-  setState: (state) => set({ state }),
+
+  gameState: null,
+  setGameState: (gameState) => set({ gameState }),
+
   gamesList: [],
   setGamesList: (gamesList) => set({ gamesList }),
 }));

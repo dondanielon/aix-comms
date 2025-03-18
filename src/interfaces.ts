@@ -1,10 +1,3 @@
-export interface WebSocketMessageLog {
-  action: 'sent' | 'received';
-  type: number;
-  payload: string;
-  timestamp: number;
-}
-
 export interface WebSocketPlayer {
   username: string;
   skin: string;
@@ -18,16 +11,6 @@ export interface WebSocketPlayer {
     y: number;
     z: number;
   } | null;
-}
-
-export interface WebSocketGameState {
-  id: string;
-  host: string;
-  name: string;
-  players: Record<string, WebSocketPlayer>;
-  terrainId: string;
-  terrainRotation: number;
-  terrainPoints: Array<{ x: number; y: number }>;
 }
 
 export interface WebSocketRoom {

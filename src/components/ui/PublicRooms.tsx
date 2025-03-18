@@ -55,7 +55,7 @@ const PublicRooms: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className='absolute w-[450px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden select-none transition-shadow duration-200 ease-in-out z-10 hover:shadow-[0_6px_16px_rgba(0,0,0,0.2)] rounded-xl  text-card-foreground'
+      className='absolute w-[350px] shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden select-none transition-shadow duration-200 ease-in-out z-10 hover:shadow-[0_6px_16px_rgba(0,0,0,0.2)] rounded-xl  text-card-foreground'
       style={{ transform: `translate(${position.current.x}px, ${position.current.y}px)` }}
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -64,18 +64,18 @@ const PublicRooms: React.FC = () => {
         onMouseDown={onMouseDown}
         style={{ cursor: dragging ? 'grabbing' : 'grab' }}
       >
-        <Label htmlFor='current' className='ml-6'>
-          Summoners Hotel
+        <Label htmlFor='current' className='ml-4'>
+          Hotel
         </Label>
         <button
-          onClick={() => setShowRoomsWindow(false)}
           className='bg-transparent border-none text-card-foreground cursor-pointer transition-colors duration-200 ease-in-out flex p-[1px] rounded-[5px] hover:text-[#ddd] hover:bg-destructive mr-3'
+          onClick={() => setShowRoomsWindow(false)}
         >
           <X size={20} />
         </button>
       </section>
       <Tabs defaultValue='rooms-list'>
-        <TabsList className='grid w-full grid-cols-2 px-3'>
+        <TabsList className='grid w-full grid-cols-2 px-4'>
           <TabsTrigger value='rooms-list'>List</TabsTrigger>
           <TabsTrigger value='create-room'>Create Room</TabsTrigger>
         </TabsList>

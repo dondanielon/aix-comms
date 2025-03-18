@@ -3,8 +3,9 @@ import { WebSocketContext } from './contexts/websocket.context';
 import { useShallow } from 'zustand/shallow';
 import { useGameStore } from '@stores/game.store';
 import { useUIStore } from '@src/stores/ui.store';
-import { WebSocketGameState } from '@src/interfaces';
+
 import { GameEvent } from '@enums/game.enums';
+import { GameState } from '@src/types/game.types';
 
 const wsUrl = 'ws://localhost:80';
 
@@ -12,12 +13,11 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [isConnected, setIsConnected] = useState(false);
 
   const setShowRoomsWindow = useUIStore((state) => state.setShowRoomsWindow);
-  const { setUser, setState, setGamesList, setLobbyId } = useGameStore(
+  const { setUser, setGameState, setGamesList } = useGameStore(
     useShallow((store) => ({
       setUser: store.setUser,
-      setState: store.setState,
+      setGameState: store.setGameState,
       setGamesList: store.setGamesList,
-      setLobbyId: store.setLobbyId,
     }))
   );
 
@@ -50,10 +50,8 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
           break;
         }
         case GameEvent.JoinGame: {
-          const gameState = payload as WebSocketGameState;
-
-          setLobbyId(gameState.id);
-          setState(gameState);
+          const gameState = payload as GameState;
+          setGameState(gameState);
           setShowRoomsWindow(false);
           break;
         }
@@ -67,6 +65,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
     ws.onclose = () => {
       console.log('Connection closed.');
       setIsConnected(false);
+      localStorage.removeItem('terrains-list');
     };
   }, []);
 
