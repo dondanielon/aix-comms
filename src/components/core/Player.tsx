@@ -8,9 +8,9 @@ const Player: React.FC<PlayerProps> = ({ initialPosition = [0, 0, 0], gltf }) =>
   const mixer = useRef<AnimationMixer>(null);
   const animations = useRef<PlayerAnimations>(null);
 
-  // const isMoving = useRef(false);
-  // const speed = useRef(DEFAULT_SPEED);
-  // const targetPosition = useRef<Vector3 | null>(null);
+  const isMoving = useRef(false);
+  const speed = useRef(DEFAULT_SPEED);
+  const targetPosition = useRef<Vector3 | null>(null);
 
   useEffect(() => {
     if (!model.current || !gltf.animations.length) return;
