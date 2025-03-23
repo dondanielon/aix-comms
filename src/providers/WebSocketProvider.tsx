@@ -24,7 +24,7 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket(wsUrl);
+    const ws = new WebSocket(wsUrl, ['hhhh']);
     ws.binaryType = 'arraybuffer';
     wsRef.current = ws;
 
