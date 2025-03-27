@@ -1,0 +1,19 @@
+{
+  "name": "aix-comms-vanilla",
+  "version": "1.0.0",
+  "description": "Vanilla TypeScript version of AIX Comms",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "1.6.7"
+  },
+  "devDependencies": {
+    "typescript": "5.3.3",
+    "vite": "5.1.4",
+    "@types/node": "20.11.19"
+  }
+} 

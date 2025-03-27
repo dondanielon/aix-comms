@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Label } from '@components/shadcn/label';
 import { useUIStore } from '@stores/ui.store';
@@ -23,12 +23,9 @@ const PublicRooms: React.FC = () => {
       x: e.clientX - position.current.x,
       y: e.clientY - position.current.y,
     };
-
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
   };
 
-  const onMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (!dragging.current) return;
 
     const newX = e.clientX - start.current.x;
@@ -46,11 +43,19 @@ const PublicRooms: React.FC = () => {
     }
   };
 
-  const onMouseUp = () => {
+  const handleMouseUp = () => {
     dragging.current = false;
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
   };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   return (
     <div
@@ -62,13 +67,12 @@ const PublicRooms: React.FC = () => {
       <section
         className='flex justify-between items-center h-[40px] bg-card'
         onMouseDown={onMouseDown}
-        style={{ cursor: dragging ? 'grabbing' : 'grab' }}
       >
         <Label htmlFor='current' className='ml-4'>
           Hotel
         </Label>
         <button
-          className='bg-transparent border-none text-card-foreground cursor-pointer transition-colors duration-200 ease-in-out flex p-[1px] rounded-[5px] hover:text-[#ddd] hover:bg-destructive mr-3'
+          className='bg-transparent border-none text-card-foreground transition-colors duration-200 ease-in-out flex p-[1px] rounded-[5px] hover:text-[#ddd] hover:bg-destructive mr-3'
           onClick={() => setShowRoomsWindow(false)}
         >
           <X size={20} />

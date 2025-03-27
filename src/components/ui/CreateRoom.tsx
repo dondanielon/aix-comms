@@ -89,7 +89,7 @@ const CreateRoom: React.FC = () => {
               <FormItem>
                 <FormLabel>Terrain</FormLabel>
                 <FormControl>
-                  <ScrollArea className='custom-scrollbar'>
+                  <ScrollArea>
                     <div className='flex flex-col gap-2 h-[148px] overflow-y-auto p-0'>
                       {terrains.map((terrain) => (
                         <Card
@@ -103,7 +103,7 @@ const CreateRoom: React.FC = () => {
                               setSelected(terrain.id);
                             }
                           }}
-                          className={`terrain-item p-3 rounded-lg cursor-pointer bg-muted transition-colors duration-100 text-[12px] border border-muted hover:bg-main-ui hover:border-main-ui ${
+                          className={`terrain-item p-3 rounded-lg bg-muted transition-colors duration-100 text-[12px] border border-muted hover:bg-main-ui hover:border-main-ui ${
                             selected === terrain.id ? 'bg-main-ui border-main-ui' : ''
                           }`}
                         >
@@ -120,9 +120,7 @@ const CreateRoom: React.FC = () => {
             )}
           />
         </div>
-        <Button type='submit' className='cursor-pointer'>
-          Create room
-        </Button>
+        <Button type='submit'>Create room</Button>
       </form>
     </Form>
   );

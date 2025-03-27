@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
-import { setupLighting, setupPlayers, setupTerrain } from '@engine/setup';
-import { CameraSystem } from '@engine/systems/CameraSystem';
-import { MovementSystem } from '@engine/systems/MovementSystem';
-import { WebSocketGameState } from '@src/interfaces';
-import { gameStore } from '@src/stores/game.store';
+
+import { useGameStore } from '@src/stores/game.store';
+import { GameState } from '@src/types/game.types';
+import { setupLighting, setupPlayers, setupTerrain } from '@src/engine/setup';
+import { CameraSystem } from '@src/engine/systems/CameraSystem';
+import { MovementSystem } from '@src/engine/systems/MovementSystem';
 
 const CAMERA_ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const CAMERA_FAR_VIEW = 1_000;
@@ -17,10 +18,10 @@ interface IGameProps {
 
 function Game({ loading }: IGameProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const user = gameStore((state) => state.user);
-  const gameState = gameStore((state) => state.gameState);
+  const user = useGameStore((state) => state.user);
+  const gameState = useGameStore((state) => state.gameState);
 
-  const initialize = async (canvas: HTMLCanvasElement, state: WebSocketGameState) => {
+  const initialize = async (canvas: HTMLCanvasElement, state: GameState) => {
     if (!user) return;
     // await new Promise((resolve) => setTimeout(resolve, 5000));
 
@@ -36,7 +37,7 @@ function Game({ loading }: IGameProps) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
-    const terrain = setupTerrain(state.terrainId, state.terrainRotation, state.terrainPoints);
+    const terrain = setupTerrain(state.terrain.id, state.terrain.rotation, state.terrain.points);
     const { directionalLight, ambientLight } = setupLighting();
     const players = await setupPlayers(state.players);
     const mainPlayer = players.find((p) => p.id === user.id);

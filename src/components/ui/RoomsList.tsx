@@ -42,12 +42,12 @@ const RoomsList: React.FC = () => {
                 </div>
               </div>
               <div className='flex items-center gap-1'>
-                <button className='bg-amber-600 flex p-1 rounded-[6px] items-center justify-center cursor-pointer'>
+                <button className='bg-amber-600 flex p-1 rounded-[6px] items-center justify-center'>
                   <BookUser className='w-5 h-5' />
                 </button>
                 <button
                   onClick={() => onJoin(gameInfo.id)}
-                  className='bg-blue-600 flex p-1 rounded-[6px] items-center justify-center cursor-pointer'
+                  className='bg-blue-600 flex p-1 rounded-[6px] items-center justify-center'
                 >
                   <ArrowBigRightDash className='w-5 h-5' />
                 </button>

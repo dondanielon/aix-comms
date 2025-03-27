@@ -33,15 +33,13 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       setIsConnected(true);
     };
 
-    ws.onmessage = (event) => {
-      const buffer = event.data as ArrayBuffer;
+    ws.onmessage = (message) => {
+      const buffer = message.data as ArrayBuffer;
       const view = new Uint8Array(buffer);
-      const messageType = view[0];
+      const event = view[0];
       const payload = JSON.parse(new TextDecoder().decode(view.slice(1)));
 
-      console.log({ messageType, payload });
-
-      switch (messageType) {
+      switch (event) {
         case GameEvent.Authentication:
           setUser(payload);
           break;
@@ -53,6 +51,11 @@ const WebSocketProvider: React.FC<{ children: React.ReactNode }> = (props) => {
           const gameState = payload as GameState;
           setGameState(gameState);
           setShowRoomsWindow(false);
+          break;
+        }
+        case GameEvent.GameStateUpdate: {
+          const gameState = payload as GameState;
+          setGameState(gameState);
           break;
         }
       }

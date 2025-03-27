@@ -1,22 +1,28 @@
-import type { AnimationAction, Mesh } from 'three';
-import { GLTF } from 'three/examples/jsm/Addons.js';
+import type { AnimationAction } from 'three';
 
 export interface Point2D {
   x: number;
   y: number;
 }
 
-export interface Player {
-  id: string;
-  username: string;
-  skin: string;
+export interface Point3D {
+  x: number;
+  y: number;
+  z: number;
 }
 
-export interface PlayerProps {
-  id: string;
+export interface Player {
   username: string;
-  position: [number, number, number];
-  gltf: GLTF;
+  skin: string;
+  position: Point3D;
+  targetPosition: Point3D | null;
+}
+
+export interface Terrain {
+  id: string;
+  name: string;
+  rotation: number;
+  points: Point2D[];
 }
 
 export interface PlayerAnimations {
@@ -39,15 +45,19 @@ export interface GameState {
   host: string;
   name: string;
   players: Record<string, Player>;
-  terrainId: string;
-  terrainRotation: number;
-  terrainPoints: Point2D[];
-  terrain?: {
-    mesh: Mesh;
-  };
+  terrain: Terrain;
+}
+
+export interface TerrainProps {
+  points: Point2D[];
 }
 
 export interface User {
   id: string;
   username: string;
+}
+
+export interface PlayerLoaderProps {
+  id: string;
+  player: Player;
 }

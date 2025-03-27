@@ -2,7 +2,7 @@ import { getAssetCache } from '@src/utils/cache.utils';
 import { http } from './config';
 import { HttpStatusCode } from 'axios';
 
-const baseUrl = '/assets';
+const baseUrl = '/cdn';
 
 export const AssetService = {
   getModel: async (id: string): Promise<Blob | null> => {
